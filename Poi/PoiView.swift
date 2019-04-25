@@ -27,6 +27,8 @@ public extension PoiViewDataSource {
 
 public class PoiView: UIView {
 
+    public var distanceToSendCardAway: CGFloat = 400
+
     var contentViews = [UIView]()
     var currentCount = 0
     var basicView = UIView()
@@ -59,7 +61,7 @@ public class PoiView: UIView {
         UIView.animate(withDuration: 0.4, animations: {
             self.contentViews[self.currentCount].transform = CGAffineTransform(rotationAngle: -0.5 * (self.frame.width / 2))
         })
-        swipe(at: direction, by: 600)
+        swipe(at: direction, by: distanceToSendCardAway)
     }
 
     public func undo() {
@@ -148,7 +150,7 @@ public class PoiView: UIView {
         if sender.state == UIGestureRecognizer.State.ended {
             if card.center.x < 75 {
                 UIView.animate(withDuration: 0.4, animations: {
-                    self.contentViews[self.currentCount].center = CGPoint(x: self.contentViews[self.currentCount].center.x - 300, y: self.contentViews[self.currentCount].center.y)
+                    self.contentViews[self.currentCount].center = CGPoint(x: self.contentViews[self.currentCount].center.x - self.distanceToSendCardAway, y: self.contentViews[self.currentCount].center.y)
                 })
                 currentCount += 1
                 card.center = cardCriteria
@@ -161,7 +163,7 @@ public class PoiView: UIView {
                 return
             } else if card.center.x > (view.frame.width - 75) {
                 UIView.animate(withDuration: 0.4, animations: {
-                    self.contentViews[self.currentCount].center = CGPoint(x: self.contentViews[self.currentCount].center.x + 300, y: self.contentViews[self.currentCount].center.y)
+                    self.contentViews[self.currentCount].center = CGPoint(x: self.contentViews[self.currentCount].center.x + self.distanceToSendCardAway, y: self.contentViews[self.currentCount].center.y)
                 })
                 currentCount += 1
                 card.center = cardCriteria
