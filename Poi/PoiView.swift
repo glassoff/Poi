@@ -26,42 +26,42 @@ public extension PoiViewDataSource {
 }
 
 public class PoiView: UIView {
-    
+
     var contentViews = [UIView]()
     var currentCount = 0
     var basicView = UIView()
     var cardCriteria: CGPoint!
     var goodImage: UIImageView?
     var badImage: UIImageView?
-    
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
     }
-    
+
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
+
     public weak var dataSource: PoiViewDataSource? {
         didSet {
             setUp()
         }
     }
-    
+
     public weak var delegate: PoiViewDelegate?
-    
+
     public func swipeCurrentCard(to direction: SwipeDirection) {
-        
+
         if(currentCount >= contentViews.count) {
             return
         }
-        
+
         UIView.animate(withDuration: 0.4, animations: {
             self.contentViews[self.currentCount].transform = CGAffineTransform(rotationAngle: -0.5 * (self.frame.width / 2))
         })
         swipe(at: direction, by: 600)
     }
-    
+
     public func undo() {
         if currentCount == 0 {
             return
@@ -72,7 +72,7 @@ public class PoiView: UIView {
             self.contentViews[self.currentCount].transform = CGAffineTransform.identity
         })
     }
-    
+
     private func setUp() {
         self.backgroundColor = UIColor.clear
         let countOfCards = dataSource?.numberOfCards(self) ?? 0
@@ -102,36 +102,36 @@ public class PoiView: UIView {
             badImage?.alpha = 0
         }
     }
-    
+
     private func createCard(index: Int) -> UIView {
         if let dataSource = dataSource {
             return dataSource.poi(self, viewForCardAt: index)
         }
         return UIView()
     }
-    
+
     private func calcBasicCardCenter() -> CGPoint {
         let bounds = basicView.frame.size
         return CGPoint(x: bounds.width / 2, y: bounds.height / 2)
     }
-    
+
     @objc func panGesture(_ sender: UIPanGestureRecognizer) {
-        
+
         if(currentCount >= contentViews.count) {
             return
         }
-        
+
         let card = sender.view!
         let view = (UIApplication.shared.keyWindow?.rootViewController?.view)!
         let location = sender.translation(in: view)
         sender.setTranslation(CGPoint.zero, in: view)
         card.center = CGPoint(x: card.center.x + location.x, y: card.center.y + location.y)
         contentViews[currentCount].center = card.center
-        
+
         let xFromCenter = card.center.x - cardCriteria.x
         contentViews[currentCount].transform = CGAffineTransform(rotationAngle: 0.5 * (xFromCenter / (self.frame.width / 2)))
         card.transform = CGAffineTransform(rotationAngle: 0.5 * (xFromCenter / (self.frame.width / 2)))
-        
+
         if let good = goodImage, xFromCenter > 0 {
             good.alpha = abs(xFromCenter) / (view.bounds.size.width / 3)
             if let bad = badImage {
@@ -145,7 +145,7 @@ public class PoiView: UIView {
             }
         }
 
-        if sender.state == UIGestureRecognizerState.ended {
+        if sender.state == UIGestureRecognizer.State.ended {
             if card.center.x < 75 {
                 UIView.animate(withDuration: 0.4, animations: {
                     self.contentViews[self.currentCount].center = CGPoint(x: self.contentViews[self.currentCount].center.x - 300, y: self.contentViews[self.currentCount].center.y)
@@ -182,7 +182,7 @@ public class PoiView: UIView {
             resetImageAlpha()
         }
     }
-    
+
     private func swipe(at direction: SwipeDirection, by distance: CGFloat) {
         switch direction {
         case .left:
@@ -211,7 +211,7 @@ public class PoiView: UIView {
             resetImageAlpha()
         }
     }
-    
+
     private func resetImageAlpha() {
         if let good = goodImage {
             good.alpha = 0
