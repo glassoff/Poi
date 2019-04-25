@@ -106,15 +106,25 @@ public class PoiView: UIView {
         }
     }
 
-    //    public override func layoutSubviews() {//XXX
-    //        super.layoutSubviews()
-    //
-    //        for view in contentViews {
-    //            if view.frame.origin == .zero {
-    //                view.frame = self.bounds
-    //            }
-    //        }
-    //    }
+    var prevSize = CGSize.zero
+
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard bounds.size != prevSize else {
+            return
+        }
+
+        for view in contentViews {
+            if view.frame.origin == .zero {
+                view.frame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
+            }
+        }
+        basicView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
+        cardCriteria = basicView.center
+
+        prevSize = bounds.size
+    }
 
     private func createCard(index: Int) -> UIView {
         if let dataSource = dataSource {
@@ -160,9 +170,12 @@ public class PoiView: UIView {
 
         if sender.state == UIGestureRecognizer.State.ended {
             if card.center.x < 75 {
+                let movedView = self.contentViews[self.currentCount]
                 UIView.animate(withDuration: 0.4, animations: {
                     self.contentViews[self.currentCount].center = CGPoint(x: self.contentViews[self.currentCount].center.x - self.distanceToSendCardAway, y: self.contentViews[self.currentCount].center.y)
-                })
+                }){ (finished) in
+                    movedView.alpha = 0
+                }
                 currentCount += 1
                 card.center = cardCriteria
                 card.transform = CGAffineTransform.identity
