@@ -69,6 +69,7 @@ public class PoiView: UIView {
             return
         }
         currentCount -= 1
+        self.contentViews[self.currentCount].alpha = 1
         UIView.animate(withDuration: 0.4, animations: {
             self.contentViews[self.currentCount].center = self.cardCriteria
             self.contentViews[self.currentCount].transform = CGAffineTransform.identity
@@ -104,6 +105,16 @@ public class PoiView: UIView {
             badImage?.alpha = 0
         }
     }
+
+    //    public override func layoutSubviews() {//XXX
+    //        super.layoutSubviews()
+    //
+    //        for view in contentViews {
+    //            if view.frame.origin == .zero {
+    //                view.frame = self.bounds
+    //            }
+    //        }
+    //    }
 
     private func createCard(index: Int) -> UIView {
         if let dataSource = dataSource {
@@ -188,9 +199,12 @@ public class PoiView: UIView {
     private func swipe(at direction: SwipeDirection, by distance: CGFloat) {
         switch direction {
         case .left:
+            let movedView = self.contentViews[self.currentCount]
             UIView.animate(withDuration: 0.4, animations: {
                 self.contentViews[self.currentCount].center = CGPoint(x: self.contentViews[self.currentCount].center.x - distance, y: self.contentViews[self.currentCount].center.y)
-            })
+            }) { (finished) in
+                movedView.alpha = 0
+            }
             currentCount += 1
             basicView.center = cardCriteria
             basicView.transform = CGAffineTransform.identity
