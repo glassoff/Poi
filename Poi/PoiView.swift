@@ -61,7 +61,7 @@ public class PoiView: UIView {
         UIView.animate(withDuration: 0.4, animations: {
             self.contentViews[self.currentCount].transform = CGAffineTransform(rotationAngle: -0.5 * (self.frame.width / 2))
         })
-        swipe(at: direction, by: distanceToSendCardAway)
+        swipe(at: direction, by: 600)
     }
 
     public func undo() {
