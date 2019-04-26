@@ -30,7 +30,7 @@ public class PoiView: UIView {
     public var distanceToSendCardAway: CGFloat = 400
 
     var contentViews = [UIView]()
-    var currentCount = 0
+    public var currentCount = 0
     var basicView = UIView()
     var cardCriteria: CGPoint!
     var goodImage: UIImageView?
